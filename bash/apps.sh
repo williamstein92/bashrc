@@ -55,7 +55,7 @@ set_wp() {
 
 wp()
 {
-    cd $PROJECT_PATH
+    cd "${PROJECT_PATH}"
 }
 
 open_old()
