@@ -9,7 +9,6 @@ import overrides
 import apps
 import aliases
 
-source ~/.profile
+import_local
 
 printf $reset
-

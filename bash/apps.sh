@@ -1,6 +1,26 @@
 test_import
 
-new () {
+import_local() {
+    PROFILE=~/.profile
+    if [ -e $PROFILE ]
+    then
+        source $PROFILE
+
+        if [ -z $__PROJECT__ ]
+        then
+            export __PROJECT__=~/project_path.sh
+
+            if [ -e $__PROJECT__ ]
+            then
+                source $__PROJECT__
+            else
+                echo "PROJECT_PATH=~" > $__PROJECT__
+            fi
+        fi
+    fi
+}
+
+new() {
     if [ -z $1 ]
     then
         "expected at least one argument"
@@ -26,6 +46,12 @@ new () {
 #     open -a "Google Chrome"
 # }
 # alias boot=open_project
+
+set_wp() {
+    path=$PWD
+    export PROJECT_PATH=$path
+    echo "PROJECT_PATH=\"${path}\"" > $__PROJECT__
+}
 
 wp()
 {
@@ -90,12 +116,6 @@ yo()
 O()
 {
     echo ':('
-}
-
-set_wp() {
-    path=$PWD
-    export PROJECT_PATH=$path
-    echo "PROJECT_PATH=\"${path}\"" > $__PROJECT__
 }
 
 multiple_copy() {
