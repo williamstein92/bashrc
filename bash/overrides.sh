@@ -1,3 +1,4 @@
+test_import
 list() {
     dir=$1
 

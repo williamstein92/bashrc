@@ -1,3 +1,11 @@
+test_import
+#
+# define bash colors
+#
+# @see bashrc
+# @author William Stein
+# <williamstein92@gmail.com>
+
 gray="\e[0;90m"
 green="\e[0;32m"
 red="\e[0;31m"

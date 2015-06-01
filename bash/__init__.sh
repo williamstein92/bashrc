@@ -1,9 +1,15 @@
+test_import
+
 import colors
 
 import paths
 import servers
 
-import apps
-
 import overrides
+import apps
 import aliases
+
+source ~/.profile
+
+printf $reset
+
