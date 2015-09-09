@@ -1,20 +1,20 @@
 test_import
 list() {
-    dir=$1
+    ARGUMENTS=$@
 
-    if [[ -n $1 ]]; then
-        dir=$PWD
+    if [[ -z $ARGUMENTS ]]
+    then
+      ARGUMENTS=$PWD
     fi
 
-    ls -aG $dir
+    ls -aG "${ARGUMENTS}"
 }
 alias ls=list
 
 change_directory() {
     DIR=$1
-    cd "${DIR}" && ls
+    builtin cd "${DIR}" && ls
 }
-alias cd=change_directory
 
 prompt_string() {
   if [[ $EUID -ne 0 ]]; then

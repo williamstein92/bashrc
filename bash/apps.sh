@@ -1,5 +1,15 @@
 test_import
 
+len() {
+    str=$1
+    echo ${#str}
+}
+
+clear_and_list() {
+    clear
+    ls
+}
+
 import_local() {
     PROFILE=~/.profile
     if [ -e $PROFILE ]
@@ -38,15 +48,6 @@ new() {
     fi
 }
 
-# open_project()
-# {
-#     cd "$PROJECT_PATH"
-#     subl --project "ntv.sublime-project"
-#     open -a "Unity"
-#     open -a "Google Chrome"
-# }
-# alias boot=open_project
-
 set_wp() {
     path=$PWD
     export PROJECT_PATH=$path
@@ -58,18 +59,9 @@ wp()
     cd "${PROJECT_PATH}"
 }
 
-open_old()
+up()
 {
-    path=$1
-    if [ -d "./__old__/${path}" ]
-    then
-        cd "./__old__/${path}"
-    elif [ -d "./.__old__/${path}" ]
-    then
-        cd "./.__old__/${path}"
-    else
-        printf "${red}directory doesn't exist${reset}\n"
-    fi
+    unity_app -projectPath "${PROJECT_PATH}"
 }
 
 go_to_unity_directory()
@@ -108,6 +100,16 @@ materials()
     go_to_unity_directory "Materials"
 }
 
+editor()
+{
+    go_to_unity_directory "Editor"
+}
+
+plugins()
+{
+    go_to_unity_directory "Plugins"
+}
+
 yo()
 {
     echo 'yo!'
@@ -125,13 +127,117 @@ multiple_copy() {
         cp $SOURCE $DESTINATION
     done
 }
-alias mcp=multiple_copy
 
 jump() {
     cd "$(git rev-parse --show-toplevel)"
 }
 
+all_like_pattern() {
+    PATTERN=$1
+    MATCHES=( $PATTERN )
+
+    if [ "${MATCHES}" == "${PATTERN}" ]; then
+        return
+    fi
+
+    echo "${MATCHES[*]}"
+}
+
+first_like_pattern() {
+    PATTERN=$1
+    MATCHES=( $PATTERN )
+
+    if [ "${MATCHES}" == "${PATTERN}" ]; then
+        return
+    fi
+
+    echo "${MATCHES[0]}"
+}
+
 proj() {
+    NAME=$( first_like_pattern "*.sublime-project" )
+    subl --project "${NAME}"
+}
+
+autofill_branch() {
+    name=$1
+    size=$( len $name )
+
+    for branch in $(git for-each-ref --format='%(refname)' refs/heads/); do
+        branchname="${branch:11}"
+        if [ "${name}" == "${branchname:0:size}" ]; then
+            echo "${branchname}"
+            return
+        fi
+    done
+}
+
+smart_cd() {
+    name=$1
+    matches=$( all_like_pattern "${name}*" )
+    for match in $matches; do
+        if [ -d "${match}" ]; then
+            change_directory "${match}"
+            return
+        fi
+    done
+}
+
+autofill_dir() {
+    dir=$1
+    name=$2
+
+    if [ -d "${name}" ]; then
+        cd "${name}"
+        return
+    fi
+
+    if [ ! -z "${name}" ]; then
+        builtin cd "${dir}"
+        smart_cd "${name}"
+    else
+        cd "${dir}"
+    fi
+}
+
+smart_workbench() {
+    autofill_dir "${WORKBENCH_PATH}" $@
+}
+
+
+open_old()
+{
+    autofill_dir "./__old__/" $@
+}
+
+smart_checkout() {
+    name=$1
+
+    if [ "${name}" == "-b" ]; then
+        git checkout $@
+    fi
+
+    fullname=$( autofill_branch "${name}" )
+    git checkout "${fullname}"
+}
+
+smart_python() {
+    # load from arg
     NAME=$1
-    subl --project "${NAME}.sublime-project"
+
+    if [ ! -f "${NAME}" ]; then
+        NAME=$( first_like_pattern "${NAME}*" )
+    fi
+
+    if [ ! -f "${NAME}" ]; then
+        NAME=$1
+        NAME="${NAME}.py"
+    fi
+
+    # if no file from arg, load from ls
+    if [ ! -f "${NAME}" ]; then
+        NAME=$( first_like_pattern "*.py" )
+    fi
+
+    python $NAME
 }
