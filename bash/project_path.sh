@@ -1,1 +1,0 @@
-PROJECT_PATH="${UNITY_PATH}/ntv"
