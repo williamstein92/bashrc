@@ -242,12 +242,15 @@ alias tool+=addtool
 
 # HADOOP
 
+export JAVA_HOME="/usr/lib/jvm/jdk-7-openjdk-armhf"
+
 export HADOOP_HOME="${WORKBENCH}/hadoop"
-export HADOOP_PREFIX="${HADOOP_HOME}/libexec"
-export HADOOP_MAPRED_HOME="${HADOOP_PREFIX}"
-export HADOOP_COMMON_HOME="${HADOOP_PREFIX}"
-export HADOOP_HDFS_HOME="${HADOOP_PREFIX}"
-export YARN_HOME="${HADOOP_PREFIX}"
+export CLASSPATH="${HADOOP_HOME}/share/hadoop/common"
+export HADOOP_INSTALL="${HADOOP_HOME}"
+export HADOOP_MAPRED_HOME="${HADOOP_HOME}"
+export HADOOP_COMMON_HOME="${HADOOP_HOME}"
+export HADOOP_HDFS_HOME="${HADOOP_HOME}"
+export YARN_HOME="${HADOOP_HOME}"
 
 # SDCARD
 
@@ -378,4 +381,8 @@ rkt-cmd() {
 	fi
 }
 alias t=rkt-cmd
+
+export PYENV_ROOT="${HOME}/.pyenv"
+export PATH="${PYENV_ROOT}/bin:${PATH}"
+eval "$(pyenv init -)"
 
