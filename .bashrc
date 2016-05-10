@@ -49,6 +49,11 @@ alias wp="w py"
 alias wr="w rkt"
 alias wc="w clj"
 
+alias ai="apt-get install"
+alias as="apt-cache search"
+
+alias pi="pip install"
+
 export LEIN_ROOT=yes
 
 NOTHING_TO_CLEAN_MSG='...No.'
@@ -109,6 +114,26 @@ fileexists() {
 	fi
 }
 alias exists?=fileexists
+
+# GIT
+
+alias g=git
+alias gs="g status"
+alias gb="g branch"
+alias gc="g checkout"
+
+git-push() {
+    MSG=$1
+
+    if ! arg? $MSG; then
+        return
+    fi
+
+    g add --all
+    g commit -m "${MSG}"
+    g push
+}
+alias g+=git-push
 
 # VIM
 
@@ -242,7 +267,7 @@ alias tool+=addtool
 
 # HADOOP
 
-export JAVA_HOME="/usr/lib/jvm/jdk-7-openjdk-armhf"
+export JAVA_HOME="/usr/lib/jvm/java-7-openjdk-armhf"
 
 export HADOOP_HOME="${WORKBENCH}/hadoop"
 export CLASSPATH="${HADOOP_HOME}/share/hadoop/common"
@@ -251,6 +276,13 @@ export HADOOP_MAPRED_HOME="${HADOOP_HOME}"
 export HADOOP_COMMON_HOME="${HADOOP_HOME}"
 export HADOOP_HDFS_HOME="${HADOOP_HOME}"
 export YARN_HOME="${HADOOP_HOME}"
+
+# SPARK
+
+SPARK="${WORKBENCH}/spark"
+
+export PATH="${PATH}:${SPARK}/bin"
+export PYSPARK_DRIVER_PYTHON=ipython
 
 # SDCARD
 
