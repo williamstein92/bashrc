@@ -186,13 +186,6 @@ vim-end() {
 }
 alias v=vim-end
 
-edit-bash() {
-	v ~/.bashrc
-	. ~/.bashrc
-}
-alias b=edit-bash
-alias b!=". ~/.bashrc"
-
 # WORKBENCH SETTINGS
 
 WORKBENCH=~/workbench
@@ -265,6 +258,16 @@ addtool() {
 }
 alias tool+=addtool
 
+# RC
+
+edit-bash() {
+	v ~/.bashrc
+	. ~/.bashrc
+        cp ~/.bashrc $WORKBENCH/bash/.bashrc
+}
+alias b=edit-bash
+alias b!=". ~/.bashrc"
+
 # HADOOP
 
 export JAVA_HOME="/usr/lib/jvm/java-7-openjdk-armhf"
@@ -276,29 +279,6 @@ export HADOOP_MAPRED_HOME="${HADOOP_HOME}"
 export HADOOP_COMMON_HOME="${HADOOP_HOME}"
 export HADOOP_HDFS_HOME="${HADOOP_HOME}"
 export YARN_HOME="${HADOOP_HOME}"
-
-# SPARK
-
-SPARK="/opt/spark"
-
-export PATH="${PATH}:${SPARK}/bin"
-export PYSPARK_DRIVER_PYTHON=ipython
-
-pyspark-cmd(){
-    FILE=$1
-
-    if empty? $FILE; then
-        pyspark
-        return
-    fi
-    
-    if ! exists? $FILE; then
-        return
-    fi
-    
-    pyspark --py-files $FILE
-}
-alias ps=pyspark-cmd
 
 # SDCARD
 
@@ -433,4 +413,28 @@ alias t=rkt-cmd
 export PYENV_ROOT="${HOME}/.pyenv"
 export PATH="${PYENV_ROOT}/bin:${PATH}"
 eval "$(pyenv init -)"
+
+# SPARK
+
+SPARK="/opt/spark"
+
+export PATH="${PATH}:${SPARK}/bin"
+export PYSPARK_PYTHON="$(pyenv which python)"
+export PYSPARK_DRIVER_PYTHON=ipython
+
+pyspark-cmd(){
+    FILE=$1
+
+    if empty? $FILE; then
+        pyspark
+        return
+    fi
+    
+    if ! exists? $FILE; then
+        return
+    fi
+    
+    pyspark --py-files $FILE
+}
+alias ps=pyspark-cmd
 
