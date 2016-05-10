@@ -269,7 +269,7 @@ alias tool+=addtool
 
 export JAVA_HOME="/usr/lib/jvm/java-7-openjdk-armhf"
 
-export HADOOP_HOME="${WORKBENCH}/hadoop"
+export HADOOP_HOME="/opt/hadoop"
 export CLASSPATH="${HADOOP_HOME}/share/hadoop/common"
 export HADOOP_INSTALL="${HADOOP_HOME}"
 export HADOOP_MAPRED_HOME="${HADOOP_HOME}"
@@ -279,10 +279,26 @@ export YARN_HOME="${HADOOP_HOME}"
 
 # SPARK
 
-SPARK="${WORKBENCH}/spark"
+SPARK="/opt/spark"
 
 export PATH="${PATH}:${SPARK}/bin"
 export PYSPARK_DRIVER_PYTHON=ipython
+
+pyspark-cmd(){
+    FILE=$1
+
+    if empty? $FILE; then
+        pyspark
+        return
+    fi
+    
+    if ! exists? $FILE; then
+        return
+    fi
+    
+    pyspark --py-files $FILE
+}
+alias ps=pyspark-cmd
 
 # SDCARD
 
@@ -376,7 +392,7 @@ alias share+=addshare
 ipy-cmd() {
 	FILE=$1
 
-	if ! arg? $FILE; then
+	if empty? $FILE; then
 		ipy
 		return
 	fi
