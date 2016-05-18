@@ -12,7 +12,7 @@ eval "`dircolors`"
 alias ls='ls $LS_OPTIONS'
 
 ls-and() {
-	CMD=$1
+	local CMD=$1
 	shift
 	$CMD "${@}"
 	ls
@@ -56,7 +56,7 @@ alias pi="pip install"
 
 export LEIN_ROOT=yes
 
-NOTHING_TO_CLEAN_MSG='...No.'
+NOTHING_TO_CLEAN_MSG='nothing to clean'
 clean() {
 	local FILE
 	local DELETABLES=(*.pyc *.swp __pycache__/)
@@ -68,7 +68,7 @@ clean() {
 	done
 }
 
-ARG_MISSING_MSG="Classic human error."
+ARG_MISSING_MSG="missing argument"
 isempty() {
 	local ARG=$1
 
@@ -93,7 +93,7 @@ argexists() {
 }
 alias arg?=argexists
 
-FILE_MISSING_MSG="Can I recommend upgrading your RAM?"
+FILE_MISSING_MSG="file missing, fool"
 fileexists() {
 	local FILE=$1
 	local MSG=$2
@@ -123,7 +123,7 @@ alias gb="g branch"
 alias gc="g checkout"
 
 git-push() {
-    MSG=$1
+    local MSG=$1
 
     if ! arg? $MSG; then
         return
@@ -138,8 +138,8 @@ alias g+=git-push
 # VIM
 
 vim-cmd(){
-	CMD=$1
-	FILE=$2
+	local CMD=$1
+	local FILE=$2
 
 	if ! arg? $CMD; then
 		return
@@ -155,16 +155,16 @@ vim-cmd(){
 }
 
 vim-goto() {
-	LINE=$1
-	FILE=$2
+	local LINE=$1
+	local FILE=$2
 
 	vim-cmd ":${LINE}" $FILE
 }
 alias v:=vim-goto
 
 vim-at() {
-	KEYWORD=$1
-	FILE=$2
+	local KEYWORD=$1
+	local FILE=$2
 
 	vim-cmd "/$KEYWORD" $FILE
 }
@@ -181,7 +181,7 @@ rc-goto() {
 alias b:=rc-goto
 
 vim-end() {
-	FILE=$1
+	local FILE=$1
 	vi + $FILE
 }
 alias v=vim-end
@@ -370,7 +370,7 @@ alias share+=addshare
 # MISC
 
 ipy-cmd() {
-	FILE=$1
+	local FILE=$1
 
 	if empty? $FILE; then
 		ipy
@@ -386,8 +386,8 @@ ipy-cmd() {
 alias p=ipy-cmd
 
 rkt-cmd() {
-	FIRST_FILE=$1
-	SECOND_FILE=$2
+	local FIRST_FILE=$1
+	local SECOND_FILE=$2
 
 	if ! arg? $FIRST_FILE; then
 		rkt
@@ -423,18 +423,21 @@ export PYSPARK_PYTHON="$(pyenv which python)"
 export PYSPARK_DRIVER_PYTHON=ipython
 
 pyspark-cmd(){
-    FILE=$1
+    local FILES=$@
+    local FILE
 
-    if empty? $FILE; then
+    if empty? $FILES; then
         pyspark
         return
     fi
+   
+    for $FILE in $FILES; do
+        if ! exists? $FILE; then
+            return
+        fi
+    done
     
-    if ! exists? $FILE; then
-        return
-    fi
-    
-    pyspark --py-files $FILE
+    pyspark --py-files $FILES
 }
-alias ps=pyspark-cmd
+alias pyspark=pyspark-cmd
 
