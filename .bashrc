@@ -420,24 +420,26 @@ SPARK="/opt/spark"
 
 export PATH="${PATH}:${SPARK}/bin"
 export PYSPARK_PYTHON="$(pyenv which python)"
+export PYTHONSTARTUP=startup.py
 export PYSPARK_DRIVER_PYTHON=ipython
 
+join(){
+    local DELIM=$1
+    shift
+    echo -n "$1"
+    shift
+    printf "%s" "${@/#/$DELIM}"
+}
+
 pyspark-cmd(){
-    local FILES=$@
-    local FILE
+    local FILES=$1
 
     if empty? $FILES; then
         pyspark
         return
     fi
    
-    for $FILE in $FILES; do
-        if ! exists? $FILE; then
-            return
-        fi
-    done
-    
-    pyspark --py-files $FILES
+    pyspark --py-files $(join , $FILES)
 }
-alias pyspark=pyspark-cmd
+alias spark=pyspark-cmd
 
